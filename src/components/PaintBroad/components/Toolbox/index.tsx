@@ -1,25 +1,27 @@
 import React, { useContext } from 'react';
 import styled from "styled-components";
 import { Button, IconButton } from "@material-ui/core";
-import PaintBoardIcons from "@/pages/PaintBroad/icons/PaintBoardIcons";
-import { PaintBoardContext } from "@/pages/PaintBroad/context";
-import { addCircle, addLine, addRectangle, addTextBox } from "@/pages/PaintBroad/fabric/addShapes";
-import { addGrid } from "@/pages/PaintBroad/fabric/addGrid";
-import { selectMode } from "@/pages/PaintBroad/fabric/selectMode";
-
-const ICON_SIZE = 20
-
+import PaintBoardIcons from "@/components/PaintBroad/icons/PaintBoardIcons";
+import { PaintBoardContext } from "@/components/PaintBroad/context";
+import { selectMode } from "@/components/PaintBroad/fabric/selectMode";
+import { ICON_SIZE } from '@/components/PaintBroad/components/Toolbox/constant'
+import ColorPicker from '@/components/PaintBroad/components/Toolbox/ColorPicker'
+import { addRectangle } from '@/components/PaintBroad/fabric/shapes/rectangle'
+import { addCircle } from '@/components/PaintBroad/fabric/shapes/circle'
+import { addLine } from '@/components/PaintBroad/fabric/shapes/line'
+import { addTextBox } from '@/components/PaintBroad/fabric/shapes/textbox'
+import { addGrid } from "@/components/PaintBroad/fabric/shapes/grid";
 
 const Toolbox = () => {
-  const { state: { cv }} = useContext(PaintBoardContext)
+  const { state: { cv, color }} = useContext(PaintBoardContext)
 
   const handleSelectMode = () => cv && selectMode(cv)
   const handleFreeDrawMode = () => cv && (cv.isDrawingMode = true)
-  const handleAddRectangle = () => cv && addRectangle(cv)
-  const handleAddCircle = () => cv && addCircle(cv)
+  const handleAddRectangle = () => cv && addRectangle(cv, color)
+  const handleAddCircle = () => cv && addCircle(cv, color)
   const handleAddGrid = () => cv && addGrid(cv)
-  const handleAddLine = () => cv && addLine(cv)
-  const handleAddTextBox = () => cv && addTextBox(cv)
+  const handleAddLine = () => cv && addLine(cv, color)
+  const handleAddTextBox = () => cv && addTextBox(cv, color)
 
   return (
     <Wrapper>
@@ -44,9 +46,7 @@ const Toolbox = () => {
       <IconButton onClick={handleAddTextBox}>
         <PaintBoardIcons size={ICON_SIZE} name={'text'} />
       </IconButton>
-      <IconButton>
-        <PaintBoardIcons size={ICON_SIZE} name={'color'} />
-      </IconButton>
+      <ColorPicker />
     </Wrapper>
   );
 };

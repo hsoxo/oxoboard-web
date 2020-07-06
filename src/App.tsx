@@ -1,8 +1,8 @@
 import React, { Suspense, useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import { Loading } from '@/components/Loading'
-import ChatRoom from '@/pages/ChatRoom'
-import PaintBoard from "@/pages/PaintBroad";
+import ChatRoom from '@/components/ChatRoom'
+import PaintBoard from "@/components/PaintBroad";
+import Room from '@/pages/Room'
 
 export default function App() {
 
@@ -17,8 +17,9 @@ export default function App() {
   }, [])
 
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={'loading...'}>
       <Switch>
+        <Route path={['/']} render={() => <Room />} />
         <Route path={['/test1']} render={() => <ChatRoom />} />
         <Route path={['/test2']} render={() => <PaintBoard />} />
       </Switch>

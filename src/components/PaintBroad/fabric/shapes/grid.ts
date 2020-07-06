@@ -1,8 +1,7 @@
 import { fabric } from 'fabric'
-import { nanoid } from "@/utils/uuid";
+import { PAPER_HEIGHT, PAPER_WIDTH } from '@/components/PaintBroad/constant'
 
-const GRID_WIDTH = 800
-const GRID_HEIGHT = 600
+
 const GRID_NAME = '_bg_grid'
 
 export const addGrid = (canvas: fabric.Canvas) => {
@@ -21,15 +20,15 @@ export const addGrid = (canvas: fabric.Canvas) => {
 
     // do in two steps to limit the calculations
     // first loop for vertical line
-    for(let i = Math.ceil(GRID_WIDTH/gridSize); i--;){
+    for(let i = Math.ceil(PAPER_WIDTH/gridSize); i--;){
       if (i > 0) {
-        lines.push( new fabric.Line([gridSize*i, 0, gridSize*i, GRID_HEIGHT], lineOption) );
+        lines.push( new fabric.Line([gridSize*i, 0, gridSize*i, PAPER_HEIGHT], lineOption) );
       }
     }
     // second loop for horizontal line
-    for(let i = Math.ceil(GRID_HEIGHT/gridSize); i--;){
+    for(let i = Math.ceil(PAPER_HEIGHT/gridSize); i--;){
       if (i > 0) {
-        lines.push(new fabric.Line([0, gridSize * i, GRID_WIDTH, gridSize * i], lineOption));
+        lines.push(new fabric.Line([0, gridSize * i, PAPER_WIDTH, gridSize * i], lineOption));
       }
     }
     const newGrid = new fabric.Group(lines, {left: 0, top: 0, evented: false, selectable: false})

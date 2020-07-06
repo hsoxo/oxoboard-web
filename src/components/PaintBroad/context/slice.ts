@@ -1,13 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fabric } from 'fabric'
-import { PaintBoardState } from "@/pages/PaintBroad/context/type-d";
+import { PaintBoardState } from "@/components/PaintBroad/context/type-d";
 
 
 export const initPaintBoardState: () => PaintBoardState = () => ({
   cv: null,
   userCode: null,
   isHost: false,
-  cvObjects: []
+  cvObjects: [],
+
+  color: '#000000'
 })
 
 const paintBoardSlice = createSlice({
@@ -24,6 +26,9 @@ const paintBoardSlice = createSlice({
     },
     setHost(state, action: PayloadAction<boolean>) {
       state.isHost = action.payload
+    },
+    setColor(state, action: PayloadAction<string>) {
+      state.color = action.payload
     }
   }
 })

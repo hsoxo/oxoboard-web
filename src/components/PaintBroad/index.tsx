@@ -1,10 +1,10 @@
 import React, { useEffect, useReducer, useRef } from 'react';
-import { initCanvas, removePath, updatePath } from "@/pages/PaintBroad/fabric/initCanvas";
+import { initCanvas, removePath, updatePath } from "@/components/PaintBroad/fabric/initCanvas";
 import styled from "styled-components";
-import Toolbox from "@/pages/PaintBroad/components/Toolbox";
-import { initPaintBoardState, paintBoardActions, paintBoardReducer } from "@/pages/PaintBroad/context/slice";
+import Toolbox from "@/components/PaintBroad/components/Toolbox";
+import { initPaintBoardState, paintBoardActions, paintBoardReducer } from "@/components/PaintBroad/context/slice";
 import { PaintBoardContext } from './context'
-import { socketPB } from "@/pages/PaintBroad/socket";
+import { socketPB } from "@/components/PaintBroad/socket";
 
 
 const PaintBoard = () => {
@@ -36,7 +36,7 @@ const PaintBoard = () => {
 
   return (
     <PaintBoardContext.Provider value={{ state, dispatch }}>
-      <Wrapper>
+      <Wrapper id="cw">
         <Toolbox />
         <canvas ref={cv} id="c" />
       </Wrapper>
@@ -46,6 +46,9 @@ const PaintBoard = () => {
 
 const Wrapper = styled.div`
   display: flex;
+  &:focus {
+    outline: none;
+  }
 `
 
 

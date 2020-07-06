@@ -1,9 +1,12 @@
 // @ts-nocheck
 import { fabric } from 'fabric'
 import { nanoid } from '@/utils/uuid'
-import { socketPB } from '@/pages/PaintBroad/socket'
+import { socketPB } from '@/components/PaintBroad/socket'
+import { PAPER_HEIGHT, PAPER_WIDTH, TO_JSON_PROPS } from '@/components/PaintBroad/constant'
 
-const TO_JSON_PROPS = ['id', 'evented', 'selectable']
+
+const updateFields = ['left', 'top', 'scaleX', 'scaleY', 'angle', 'height', 'width', 'radius', 'text']
+
 
 fabric.Canvas.prototype.getObjectById = function (id) {
   const objs = this.getObjects()
@@ -22,11 +25,12 @@ fabric.Canvas.prototype.stringify = function (id) {
 
 export const initCanvas = () => {
   const canvas = new fabric.Canvas('c')
-  canvas.setHeight(600)
-  canvas.setWidth(800)
+  canvas.setHeight(PAPER_HEIGHT)
+  canvas.setWidth(PAPER_WIDTH)
   canvas.backgroundColor = '#fafafa'
   canvas.freeDrawingBrush.color = 'black'
   canvas.freeDrawingBrush.width = 5
+  canvas.selection = false
 
   canvas.on('object:added', e => {
     if (!e.target) return
@@ -39,11 +43,21 @@ export const initCanvas = () => {
 
   canvas.on('object:modified', e => {
     socketPB.emit('addPath', e.target.toJSON(TO_JSON_PROPS))
+    console.log('updatePath', e.target.toJSON(TO_JSON_PROPS))
   })
 
   canvas.on('object:removed', e => {
     socketPB.emit('removePath', e.target.toJSON(TO_JSON_PROPS))
   })
+
+  const canvasWrapper = document.getElementById('cw');
+  canvasWrapper.tabIndex = 1000;
+  canvasWrapper.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === 'Backspace') {
+      const obj = canvas.getActiveObjects()
+      canvas.remove(...obj)
+    }
+  }, false);
 
   canvas.renderAll()
 
@@ -79,12 +93,7 @@ export const updatePath = (canvas: fabric.Canvas, path: fabric.Object) => {
     objects.forEach((o) => {
       const existObj = canvas.getObjectById(o.id)
       if (existObj) {
-        if (existObj.type === 'line') {
-          const updateFields = ['left', 'top', 'scaleX', 'scaleY', 'angle']
-          existObj.set(Object.entries(path).filter(([k, v]) => updateFields.includes(k)).reduce((a, [k, v]) => ({...a, [k]: v}), {}))
-        } else {
-          existObj.set(path)
-        }
+        existObj.set(Object.entries(path).filter(([k, v]) => updateFields.includes(k)).reduce((a, [k, v]) => ({...a, [k]: v}), {}))
       } else {
         canvas.add(o)
       }

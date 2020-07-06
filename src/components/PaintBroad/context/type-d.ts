@@ -5,4 +5,6 @@ export interface PaintBoardState {
   userCode: string | null
   isHost: boolean
   cvObjects: any[]
+
+  color: string
 }

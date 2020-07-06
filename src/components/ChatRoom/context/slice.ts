@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChatMessage, ChatRoomState } from "@/pages/ChatRoom/context/type-d";
+import { ChatMessage, ChatRoomState } from "@/components/ChatRoom/context/type-d";
 
 
 export const initChatRoomState: () => ChatRoomState = () => ({

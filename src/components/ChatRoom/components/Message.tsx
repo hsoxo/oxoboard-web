@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChatMessage } from "@/pages/ChatRoom/context/type-d";
+import { ChatMessage } from "@/components/ChatRoom/context/type-d";
 import styled from "styled-components";
 
 const Message: React.FC<ChatMessage> = ({
@@ -8,7 +8,7 @@ const Message: React.FC<ChatMessage> = ({
   userCode
                                         }) => {
   return (
-    <div>
+    <Wrapper>
       <div>
         <span>
           {userCode}
@@ -20,15 +20,21 @@ const Message: React.FC<ChatMessage> = ({
       <Body>
         {message}
       </Body>
-    </div>
+    </Wrapper>
   );
 };
 
+const Wrapper = styled.div`
+  margin: 5px;
+`
 const Body = styled.div`
   background-color: #dff0ff;
-  width: 70%;
+  max-width: 70%;
+  width: fit-content;
   border-radius: 15px;
-  padding: 15px;
+  padding: 8px 12px;
+  word-break: break-word;
+  margin-top: 3px
 `
 
 export default Message;
