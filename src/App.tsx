@@ -1,11 +1,17 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { Route, Switch, useLocation, useHistory } from 'react-router-dom'
 import Room from '@/pages/Room'
 import Welcome from '@/pages/Welcome'
+import { sNickname, sToken } from '@/utils/storage'
+import { getUserInfo } from '@/api/user'
+import { reduxAction } from '@/store'
+import { globalActions } from '@/store/global/slice'
+import { LinearProgress } from '@material-ui/core'
 
 export default function App() {
   const history = useHistory()
   const location = useLocation()
+  const [loading, setLoading] = useState(true)
 
   // useEffect(() => {
   //   const icon = document.createElement('link')
@@ -23,10 +29,30 @@ export default function App() {
     }
   }, [])
 
+  useEffect(() => {
+    const token = sToken.get()
+    if (token) {
+      getUserInfo().then((r: any) => {
+        sToken.set(r.accessToken)
+        sNickname.set(r.userInfo.nickname)
+        reduxAction(globalActions.setUserInfo(r.userInfo))
+        setLoading(false)
+      })
+    } else {
+      setLoading(false)
+    }
+  }, [])
+
   return (
-    <Switch>
-      <Route path={'/login'} render={() => <Welcome />} />
-      <Route path={'/:roomId'} render={() => <Room />} />
-    </Switch>
+    <>
+      {loading ? (
+        <LinearProgress />
+      ) : (
+        <Switch>
+          <Route path={'/login'} render={() => <Welcome />} />
+          <Route path={'/:roomId'} render={() => <Room />} />
+        </Switch>
+      )}
+    </>
   )
 }

@@ -14,29 +14,11 @@ import { globalActions } from '@/store/global/slice'
 
 const Welcome = () => {
   const [currentSlide, setSlide] = useState(0)
-  const [loading, setLoading] = useState(true)
   const props = useSpring({ transform: `translateX(-${currentSlide * 120}%)` })
   const userInfo = useSelector(selectors.kvGlobal('userInfo'))
 
-  useEffect(() => {
-    const token = sToken.get()
-    if (token) {
-      getUserInfo().then((r: any) => {
-        sToken.set(r.accessToken)
-        sNickname.set(r.userInfo.nickname)
-        reduxAction(globalActions.setUserInfo(r.userInfo))
-        setLoading(false)
-      })
-    } else {
-      setLoading(false)
-    }
-  }, [])
-
   return (
     <Wrapper>
-      {loading ? (
-        <LinearProgress />
-      ) : (
         <LoginWrapper>
           <div className="site-title">OxO Whiteboard</div>
 
@@ -71,7 +53,6 @@ const Welcome = () => {
             </Button>
           )}
         </LoginWrapper>
-      )}
     </Wrapper>
   )
 }
