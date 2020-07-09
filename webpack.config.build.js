@@ -29,7 +29,7 @@ module.exports = {
       test: /\.(js|css|csv)$/,
       algorithm: 'gzip',
       threshold: 8192
-    })
+    }),
     // new BundleAnalyzerPlugin({
     //   analyzerPort: 6330
     // })
@@ -39,18 +39,14 @@ module.exports = {
     sideEffects: true,
     minimize: true,
     minimizer: [
-      ...(process.env.EXECUTE_ENV !== 'dev'
-        ? [
-            new TerserPlugin({
-              sourceMap: false,
-              terserOptions: {
-                compress: {
-                  drop_console: true
-                }
-              }
-            })
-          ]
-        : [])
+      new TerserPlugin({
+        sourceMap: false,
+        terserOptions: {
+          compress: {
+            drop_console: true
+          }
+        }
+      })
     ],
     splitChunks: {
       chunks: 'all',
