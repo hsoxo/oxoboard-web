@@ -10,7 +10,7 @@ module.exports = {
   watch: true,
   entry: {
     hot: 'webpack/hot/dev-server',
-    checkin: __dirname + "/src/index.tsx",
+    app: __dirname + "/src/index.tsx",
   },
   output: {
     path: __dirname + "/dist",

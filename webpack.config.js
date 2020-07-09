@@ -9,6 +9,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', '.json', '.css'],
     alias: {
       "@": path.resolve(__dirname, './src'),
+      "@fabric": path.resolve(__dirname, './src/components/PaintBoard/fabric'),
     },
   },
   module: {

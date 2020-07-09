@@ -11,7 +11,7 @@ module.exports = {
   mode: 'production',
   watch: false,
   entry: {
-    statusconnet: __dirname + '/src/index.tsx'
+    hsoxo: __dirname + '/src/index.tsx'
   },
   output: {
     path: __dirname + '/dist',

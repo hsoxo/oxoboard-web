@@ -1,22 +1,23 @@
-import React, { useContext } from 'react';
-import styled from "styled-components";
-import { Button, IconButton } from "@material-ui/core";
-import PaintBoardIcons from "@/components/PaintBroad/icons/PaintBoardIcons";
-import { PaintBoardContext } from "@/components/PaintBroad/context";
-import { selectMode } from "@/components/PaintBroad/fabric/selectMode";
+import React, { useContext } from 'react'
+import styled from 'styled-components'
+import { IconButton } from '@material-ui/core'
+import PaintBoardIcons from '@/components/PaintBroad/icons/PaintBoardIcons'
+import { PaintBoardContext } from '@/components/PaintBroad/context'
+import { selectMode } from '@/components/PaintBroad/fabric/selectMode'
 import { ICON_SIZE } from '@/components/PaintBroad/components/Toolbox/constant'
 import ColorPicker from '@/components/PaintBroad/components/Toolbox/ColorPicker'
 import { addRectangle } from '@/components/PaintBroad/fabric/shapes/rectangle'
 import { addCircle } from '@/components/PaintBroad/fabric/shapes/circle'
 import { addLine } from '@/components/PaintBroad/fabric/shapes/line'
 import { addTextBox } from '@/components/PaintBroad/fabric/shapes/textbox'
-import { addGrid } from "@/components/PaintBroad/fabric/shapes/grid";
+import { addGrid } from '@/components/PaintBroad/fabric/shapes/grid'
+import { freeDrawMode } from '@/components/PaintBroad/fabric/freeDrawMode'
 
 const Toolbox = () => {
   const { state: { cv, color, socket }} = useContext(PaintBoardContext)
 
   const handleSelectMode = () => cv && selectMode(cv)
-  const handleFreeDrawMode = () => cv && (cv.isDrawingMode = true)
+  const handleFreeDrawMode = () => cv && freeDrawMode(cv)
   const handleAddRectangle = () => cv && socket && addRectangle(cv, color, socket)
   const handleAddCircle = () => cv && socket && addCircle(cv, color, socket)
   const handleAddGrid = () => cv && addGrid(cv)
