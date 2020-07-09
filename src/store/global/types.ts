@@ -1,8 +1,7 @@
 export interface UserInfo {
   email: string
-  password: string
-  uid: number
   username: string
+  nickname: string
 }
 
 export interface GlobalState {

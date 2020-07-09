@@ -1,5 +1,6 @@
 // @ts-nocheck
 import axios from 'axios'
+import { sToken } from '@/utils/storage'
 
 // create an axios instance
 const service = axios.create({
@@ -10,6 +11,10 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
+    const token = sToken.get()
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
     return config
   },
   error => Promise.reject(error)

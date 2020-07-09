@@ -10,3 +10,10 @@ export function login(username: string, password: string) {
     }
   })
 }
+
+export function getUserInfo() {
+  return requests({
+    url: '/api/user',
+    method: "GET",
+  })
+}

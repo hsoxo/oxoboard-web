@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField'
 import { useSnackbar } from 'notistack'
 import styled from 'styled-components'
 import { login } from '@/api/user'
-import { sToken } from '@/utils/storage'
+import { sNickname, sToken } from '@/utils/storage'
 import { reduxAction } from '@/store'
 import { globalActions } from '@/store/global/slice'
 
@@ -19,6 +19,7 @@ const Login: React.FC = () => {
       login(username, password)
         .then((r: any) => {
           sToken.set(r.accessToken)
+          sNickname.set(r.userInfo.nickname)
           reduxAction(globalActions.setUserInfo(r.userInfo))
         })
         .catch(e => {
@@ -32,12 +33,15 @@ const Login: React.FC = () => {
     <Form>
       <TextField
         label="用户名"
+        id="username"
         margin="dense"
         variant="outlined"
         value={username}
         onChange={e => setUsername(e.target.value)}
       />
       <TextField
+        type="password"
+        id="password"
         label="密码"
         margin="dense"
         variant="outlined"

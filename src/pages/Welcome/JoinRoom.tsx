@@ -6,10 +6,13 @@ import { fetchChatroomInfo } from '@/api/chatroom'
 import { TextField } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
 import { sNickname } from '@/utils/storage'
+import { useSelector } from '@/store'
+import selectors from '@/store/selectors'
 
 const JoinRoom: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar()
   const history = useHistory()
+  const userInfo = useSelector(selectors.kvGlobal('userInfo'))
   const [nn, setNn] = useState('')
   const [roomId, setRoomId] = useState('')
 
@@ -17,7 +20,7 @@ const JoinRoom: React.FC = () => {
     if (roomId) {
       fetchChatroomInfo(roomId)
         .then(r => {
-          sNickname.set(nn)
+          sNickname.set(`${nn} (游客)`)
           // @ts-ignore
           history.push(`/${r.chatroomId}`)
         })
@@ -29,13 +32,23 @@ const JoinRoom: React.FC = () => {
 
   return (
     <Form>
-      <TextField
-        label="您的昵称"
-        margin="dense"
-        variant="outlined"
-        value={nn}
-        onChange={e => setNn(e.target.value)}
-      />
+      {userInfo && userInfo.nickname ? (
+        <TextField
+          label="您的昵称"
+          margin="dense"
+          variant="outlined"
+          disabled
+          value={userInfo.nickname}
+        />
+      ) : (
+        <TextField
+          label="您的昵称"
+          margin="dense"
+          variant="outlined"
+          value={nn}
+          onChange={e => setNn(e.target.value)}
+        />
+      )}
       <TextField
         label="房间号"
         margin="dense"
@@ -43,11 +56,7 @@ const JoinRoom: React.FC = () => {
         value={roomId}
         onChange={e => setRoomId(e.target.value)}
       />
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={handleJoinRoom}
-      >
+      <Button variant="contained" color="secondary" onClick={handleJoinRoom}>
         加入房间
       </Button>
     </Form>
