@@ -13,14 +13,14 @@ import { addTextBox } from '@/components/PaintBroad/fabric/shapes/textbox'
 import { addGrid } from "@/components/PaintBroad/fabric/shapes/grid";
 
 const Toolbox = () => {
-  const { state: { cv, color }} = useContext(PaintBoardContext)
+  const { state: { cv, color, socket }} = useContext(PaintBoardContext)
 
   const handleSelectMode = () => cv && selectMode(cv)
   const handleFreeDrawMode = () => cv && (cv.isDrawingMode = true)
-  const handleAddRectangle = () => cv && addRectangle(cv, color)
-  const handleAddCircle = () => cv && addCircle(cv, color)
+  const handleAddRectangle = () => cv && socket && addRectangle(cv, color, socket)
+  const handleAddCircle = () => cv && socket && addCircle(cv, color, socket)
   const handleAddGrid = () => cv && addGrid(cv)
-  const handleAddLine = () => cv && addLine(cv, color)
+  const handleAddLine = () => cv && socket && addLine(cv, color, socket)
   const handleAddTextBox = () => cv && addTextBox(cv, color)
 
   return (

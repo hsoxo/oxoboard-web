@@ -1,13 +1,18 @@
 import React, { useEffect, useReducer, useRef } from 'react';
-import { initCanvas, removePath, updatePath } from "@/components/PaintBroad/fabric/initCanvas";
+import { addEventHandlers, initCanvas, removePath, updatePath } from '@/components/PaintBroad/fabric/initCanvas'
 import styled from "styled-components";
 import Toolbox from "@/components/PaintBroad/components/Toolbox";
 import { initPaintBoardState, paintBoardActions, paintBoardReducer } from "@/components/PaintBroad/context/slice";
 import { PaintBoardContext } from './context'
-import { socketPB } from "@/components/PaintBroad/socket";
+import io from "socket.io-client"
+import { nanoid } from '@/utils/uuid'
+import { socketPB } from '@/components/PaintBroad/socket'
+import { TO_JSON_PROPS } from '@/components/PaintBroad/constant'
+import { IEvent } from 'fabric/fabric-impl'
+import { sNickname } from '@/utils/storage'
 
 
-const PaintBoard = () => {
+const PaintBoard: React.FC<{ boardId: string, userCode: string }> = ({ boardId, userCode }) => {
   const [state, dispatch] = useReducer(paintBoardReducer, initPaintBoardState())
   const cv = useRef<null | HTMLCanvasElement>(null)
 
@@ -19,20 +24,21 @@ const PaintBoard = () => {
   }, [cv])
 
   useEffect(() => {
-    socketPB.on('userCode', (userCode: string) => {
-      dispatch(paintBoardActions.setUserCode(userCode))
-    })
-  }, [])
+    if (state.cv && state.socket) {
+      addEventHandlers(state.cv, state.socket)
+    }
+  }, [state.cv, state.socket])
 
   useEffect(() => {
-    socketPB.on('broadcast',(msg: any) => {
-      if (msg.type === 'add') {
-        state.cv && updatePath(state.cv, msg.path)
-      } else if (msg.type === 'remove') {
-        state.cv && removePath(state.cv, msg.path)
+    const socket = io(`${process.env.WS_BASE}/paint`, {
+      query: {
+        boardId,
+        userCode,
+        nickname: sNickname.get()
       }
     })
-  }, [state.cv])
+    dispatch(paintBoardActions.setSocket(socket))
+  }, [boardId])
 
   return (
     <PaintBoardContext.Provider value={{ state, dispatch }}>

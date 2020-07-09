@@ -3,18 +3,13 @@ import axios from 'axios'
 
 // create an axios instance
 const service = axios.create({
+  baseURL: process.env.BACKEND_URL,
   timeout: 120000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
-    if (process.env.EXECUTE_ENV !== 'serve') {
-      config.url =
-        config.url?.replace('/api', process.env.STATUS_CONNECT_BACKEND_URL) ||
-        ''
-    }
-
     return config
   },
   error => Promise.reject(error)

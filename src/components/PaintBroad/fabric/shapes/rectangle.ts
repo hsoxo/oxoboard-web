@@ -1,9 +1,8 @@
 import { fabric } from 'fabric'
 import { TO_JSON_PROPS } from '@/components/PaintBroad/constant'
-import { socketPB } from '@/components/PaintBroad/socket'
 import { IEvent } from 'fabric/fabric-impl'
 
-export const addRectangle = (canvas: fabric.Canvas, color: string) => {
+export const addRectangle = (canvas: fabric.Canvas, color: string, socket: SocketIOClient.Socket) => {
   canvas.isDrawingMode = false
 
   let started = false;
@@ -58,14 +57,10 @@ export const addRectangle = (canvas: fabric.Canvas, color: string) => {
     }
 
     const square = canvas.getActiveObject();
-    if (square) {
-      console.log(square.toJSON(TO_JSON_PROPS))
-      socketPB.emit('addPath', square.toJSON(TO_JSON_PROPS))
-    }
 
     canvas.add(square);
     canvas.renderAll();
-    socketPB.emit('addPath', square.toJSON(TO_JSON_PROPS))
+    socket.emit('addPath', square.toJSON(TO_JSON_PROPS))
     new Promise(() => {
       canvas.off('mouse:down', mousedown);
       canvas.off('mouse:move', mousemove);

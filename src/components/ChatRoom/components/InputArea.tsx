@@ -1,18 +1,18 @@
 import React, { useContext } from 'react'
 import { Button, Divider, Grid, IconButton, InputBase, Paper, TextField } from '@material-ui/core'
-import { socketCR } from '../socket'
 import { ChatRoomContext } from "@/components/ChatRoom/context";
 import SendIcon from '@material-ui/icons/Send';
 import styled from 'styled-components'
 
 const InputArea = () => {
+  const { state } = useContext(ChatRoomContext)
   const [value, setValue] = React.useState('')
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setValue(event.target.value)
 
   const handleSend = () => {
     if (value) {
-      socketCR.emit('sendMsg', value)
+      state.socket?.emit('sendMsg', value)
       setValue('')
     }
   }

@@ -29,9 +29,7 @@ module.exports = {
     },
     proxy: {
       '/api': {
-        target: 'https://statusconnect-dev.azurewebsites.net/StatusConnect/api/V1',
-        // target: 'http://localhost:8080/StatusConnect/api/V1',
-        // target: 'https://statusconnect.pwc.com/StatusConnect/api/V1',
+        target: 'http://localhost:5000/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': '',

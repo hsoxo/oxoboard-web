@@ -9,7 +9,9 @@ export const initPaintBoardState: () => PaintBoardState = () => ({
   isHost: false,
   cvObjects: [],
 
-  color: '#000000'
+  color: '#000000',
+
+  socket: null
 })
 
 const paintBoardSlice = createSlice({
@@ -29,6 +31,9 @@ const paintBoardSlice = createSlice({
     },
     setColor(state, action: PayloadAction<string>) {
       state.color = action.payload
+    },
+    setSocket(state, action: PayloadAction<SocketIOClient.Socket>) {
+      state.socket = action.payload
     }
   }
 })

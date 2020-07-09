@@ -7,4 +7,6 @@ export interface PaintBoardState {
   cvObjects: any[]
 
   color: string
+
+  socket: SocketIOClient.Socket | null
 }

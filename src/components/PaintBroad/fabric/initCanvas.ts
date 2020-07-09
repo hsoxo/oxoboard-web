@@ -1,8 +1,9 @@
 // @ts-nocheck
 import { fabric } from 'fabric'
 import { nanoid } from '@/utils/uuid'
-import { socketPB } from '@/components/PaintBroad/socket'
 import { PAPER_HEIGHT, PAPER_WIDTH, TO_JSON_PROPS } from '@/components/PaintBroad/constant'
+import { socketPB } from '@/components/PaintBroad/socket'
+import { IEvent } from 'fabric/fabric-impl'
 
 
 const updateFields = ['left', 'top', 'scaleX', 'scaleY', 'angle', 'height', 'width', 'radius', 'text']
@@ -32,24 +33,6 @@ export const initCanvas = () => {
   canvas.freeDrawingBrush.width = 5
   canvas.selection = false
 
-  canvas.on('object:added', e => {
-    if (!e.target) return
-    if (!e.target.id) {
-      e.target.set('id', nanoid())
-      socketPB.emit('addPath', e.target.toJSON(TO_JSON_PROPS))
-      console.log('addPath', e.target.toJSON(TO_JSON_PROPS))
-    }
-  })
-
-  canvas.on('object:modified', e => {
-    socketPB.emit('addPath', e.target.toJSON(TO_JSON_PROPS))
-    console.log('updatePath', e.target.toJSON(TO_JSON_PROPS))
-  })
-
-  canvas.on('object:removed', e => {
-    socketPB.emit('removePath', e.target.toJSON(TO_JSON_PROPS))
-  })
-
   const canvasWrapper = document.getElementById('cw');
   canvasWrapper.tabIndex = 1000;
   canvasWrapper.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -62,6 +45,42 @@ export const initCanvas = () => {
   canvas.renderAll()
 
   return canvas
+}
+
+export const addEventHandlers = (cv: fabric.Canvas, socket: SocketIOClient.Socket) => {
+  console.log('addEventHandlers')
+  cv.on('object:added', (e: IEvent) => {
+    console.log('object:added')
+    if (!e.target) return
+    if (!e.target.id) {
+      e.target.set('id', nanoid())
+      socket.emit('addPath', e.target.toJSON(TO_JSON_PROPS))
+      console.log('addPath', e.target.toJSON(TO_JSON_PROPS))
+    }
+  })
+
+  cv.on('object:modified', (e: IEvent) => {
+    socket.emit('addPath', e.target.toJSON(TO_JSON_PROPS))
+    console.log('updatePath', e.target.toJSON(TO_JSON_PROPS))
+  })
+
+  cv.on('object:removed', (e: IEvent) => {
+    socket.emit('removePath', e.target.toJSON(TO_JSON_PROPS))
+  })
+
+  socket.on('broadcast',(msg: any) => {
+    console.log(msg)
+    if (msg.type === 'add') {
+      cv && updatePath(cv, msg.path)
+    } else if (msg.type === 'remove') {
+      cv && removePath(cv, msg.path)
+    }
+  })
+
+  socket.on('initBoard', (r: any) => {
+    console.log(r, cv)
+    r.paths.forEach(x => cv && updatePath(cv, JSON.parse(x.path)))
+  })
 }
 
 export const addPath = (canvas: fabric.Canvas, path: fabric.Object) => {
@@ -78,6 +97,7 @@ export const addPath = (canvas: fabric.Canvas, path: fabric.Object) => {
 }
 
 export const updatePath = (canvas: fabric.Canvas, path: fabric.Object) => {
+  console.log(123213)
   if (path.type === "activeSelection") {
     path.objects.forEach(x => {
       const existObj = canvas.getObjectById(x.id)

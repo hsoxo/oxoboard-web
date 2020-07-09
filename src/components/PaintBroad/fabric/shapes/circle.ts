@@ -1,9 +1,8 @@
 import { fabric } from 'fabric'
-import { socketPB } from '@/components/PaintBroad/socket'
 import { TO_JSON_PROPS } from '@/components/PaintBroad/constant'
 import { IEvent } from 'fabric/fabric-impl'
 
-export const addCircle = (canvas: fabric.Canvas, color: string) => {
+export const addCircle = (canvas: fabric.Canvas, color: string, socket: SocketIOClient.Socket) => {
   canvas.isDrawingMode = false
 
   let started = false;
@@ -58,7 +57,7 @@ export const addCircle = (canvas: fabric.Canvas, color: string) => {
     const circle = canvas.getActiveObject();
     canvas.add(circle);
     canvas.renderAll();
-    socketPB.emit('addPath', circle.toJSON(TO_JSON_PROPS))
+    socket.emit('addPath', circle.toJSON(TO_JSON_PROPS))
     new Promise(() => {
       canvas.off('mouse:down', mousedown);
       canvas.off('mouse:move', mousemove);

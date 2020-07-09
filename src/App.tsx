@@ -1,28 +1,32 @@
 import React, { Suspense, useEffect } from 'react'
-import { Route, Switch } from 'react-router-dom'
-import ChatRoom from '@/components/ChatRoom'
-import PaintBoard from "@/components/PaintBroad";
+import { Route, Switch, useLocation, useHistory } from 'react-router-dom'
 import Room from '@/pages/Room'
+import Welcome from '@/pages/Welcome'
 
 export default function App() {
+  const history = useHistory()
+  const location = useLocation()
+
+  // useEffect(() => {
+  //   const icon = document.createElement('link')
+  //   icon.setAttribute('rel', 'icon')
+  //   icon.setAttribute(
+  //     'href',
+  //     `${document.location.protocol}//${document.location.host}/favicon.ico`
+  //   )
+  //   document.head.appendChild(icon)
+  // }, [])
 
   useEffect(() => {
-    const icon = document.createElement('link')
-    icon.setAttribute('rel', 'icon')
-    icon.setAttribute(
-      'href',
-      `${document.location.protocol}//${document.location.host}/favicon.ico`
-    )
-    document.head.appendChild(icon)
+    if (location.pathname === '/') {
+      history.replace('/login')
+    }
   }, [])
 
   return (
-    <Suspense fallback={'loading...'}>
-      <Switch>
-        <Route path={['/']} render={() => <Room />} />
-        <Route path={['/test1']} render={() => <ChatRoom />} />
-        <Route path={['/test2']} render={() => <PaintBoard />} />
-      </Switch>
-    </Suspense>
+    <Switch>
+      <Route path={'/login'} render={() => <Welcome />} />
+      <Route path={'/:roomId'} render={() => <Room />} />
+    </Switch>
   )
 }
